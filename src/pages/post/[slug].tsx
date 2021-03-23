@@ -112,7 +112,6 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
       notFound: true,
     };
   }
-  console.log(postData.last_publication_date);
 
   const formatedPost = {
     data: {
