@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import Prismic from '@prismicio/client';
 import { GetStaticProps } from 'next';
 import { format } from 'date-fns';
@@ -28,7 +27,7 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-export default function Home({ postsPagination }: HomeProps): ReactElement {
+export default function Home({ postsPagination }: HomeProps): JSX.Element {
   console.log(JSON.stringify(postsPagination, null, 2));
   return <h1>HOME</h1>;
 }
