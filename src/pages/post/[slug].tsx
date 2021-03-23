@@ -41,7 +41,7 @@ export default function Post({ post }: PostProps): JSX.Element {
     return (
       <>
         <Header />
-        <div>Carregando...</div>
+        <div className={commonStyles.content}>Carregando...</div>
       </>
     );
   }
