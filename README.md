@@ -7,7 +7,7 @@
   <h2 align="center">Rocketseat Ignite - Space Traveling</h2>
 </p>
 
-This project aims to create a blog structure using (Prismic CMS)[https://prismic.io/]
+This project aims to create a blog structure using [Prismic CMS](https://prismic.io/)
 
 ## 🏃‍♂️ Try it Local
 
