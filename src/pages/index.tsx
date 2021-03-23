@@ -1,12 +1,17 @@
 import Prismic from '@prismicio/client';
+import Head from 'next/head';
+import Link from 'next/link';
+import { FiCalendar, FiUser } from 'react-icons/fi';
 import { GetStaticProps } from 'next';
-import { format } from 'date-fns';
-import ptBR from 'date-fns/locale/pt-BR';
 
+import { useState } from 'react';
 import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
+import { parsePtBrDate } from '../utils/parsePtBrDate';
+import Header from '../components/Header';
+import { Loader } from '../components/Loader';
 
 interface Post {
   uid?: string;
@@ -28,8 +33,75 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps): JSX.Element {
-  console.log(JSON.stringify(postsPagination, null, 2));
-  return <h1>HOME</h1>;
+  const { results: postList, next_page } = postsPagination;
+
+  const [posts, setPosts] = useState(postList);
+  const [nextPage, setNextPage] = useState<string | null>(next_page);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const loadMorePosts = async (): Promise<void> => {
+    setIsLoading(true);
+    try {
+      const { results, next_page: newNextPage } = await fetch(
+        nextPage
+      ).then(response => response.json());
+
+      const newPosts = results.map(post => ({
+        uid: post.uid,
+        first_publication_date: parsePtBrDate(post.first_publication_date),
+        data: {
+          title: post.data.title,
+          subtitle: post.data.subtitle,
+          author: post.data.author,
+        },
+      }));
+
+      setNextPage(newNextPage);
+      setPosts([...posts, ...newPosts]);
+    } catch (e) {
+      console.error('Error loading posts:', e.message);
+    }
+    setIsLoading(false);
+  };
+
+  const seeMoreButton = isLoading ? (
+    <Loader />
+  ) : (
+    <button type="button" className={styles.loadMore} onClick={loadMorePosts}>
+      Carregar mais posts
+    </button>
+  );
+
+  return (
+    <>
+      <Head>
+        <title>Home | Space Traveling</title>
+        <meta name="description" content="Posts incríveis toda semana!" />
+      </Head>
+      <Header />
+      <main className={commonStyles.content}>
+        {posts.map(post => (
+          <Link href={`/post/${post.uid}`} key={post.uid}>
+            <a className={styles.post}>
+              <h2>{post.data.title}</h2>
+              <p>{post.data.subtitle}</p>
+              <div className={styles.postInfo}>
+                <span>
+                  <FiCalendar />
+                  {post.first_publication_date}
+                </span>
+                <span>
+                  <FiUser />
+                  {post.data.author}
+                </span>
+              </div>
+            </a>
+          </Link>
+        ))}
+        {nextPage && seeMoreButton}
+      </main>
+    </>
+  );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -43,13 +115,7 @@ export const getStaticProps: GetStaticProps = async () => {
   );
   const formatedPosts = results.map(post => ({
     uid: post.uid,
-    first_publication_date: format(
-      new Date(post.first_publication_date),
-      'd MMM yyyy',
-      {
-        locale: ptBR,
-      }
-    ),
+    first_publication_date: parsePtBrDate(post.first_publication_date),
     data: {
       title: post.data.title,
       subtitle: post.data.subtitle,
