@@ -6,12 +6,13 @@ import { GetStaticProps } from 'next';
 
 import { useState } from 'react';
 import { getPrismicClient } from '../services/prismic';
+import { parsePtBrDate } from '../utils/parsePtBrDate';
+
+import { Loader } from '../components/Loader';
+import Header from '../components/Header';
 
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
-import { parsePtBrDate } from '../utils/parsePtBrDate';
-import Header from '../components/Header';
-import { Loader } from '../components/Loader';
 
 interface Post {
   uid?: string;
@@ -85,10 +86,10 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
             <a className={styles.post}>
               <h2>{post.data.title}</h2>
               <p>{post.data.subtitle}</p>
-              <div className={styles.postInfo}>
+              <div className={commonStyles.postInfo}>
                 <span>
                   <FiCalendar />
-                  {post.first_publication_date}
+                  {parsePtBrDate(post.first_publication_date)}
                 </span>
                 <span>
                   <FiUser />
@@ -115,7 +116,7 @@ export const getStaticProps: GetStaticProps = async () => {
   );
   const formatedPosts = results.map(post => ({
     uid: post.uid,
-    first_publication_date: parsePtBrDate(post.first_publication_date),
+    first_publication_date: post.first_publication_date,
     data: {
       title: post.data.title,
       subtitle: post.data.subtitle,

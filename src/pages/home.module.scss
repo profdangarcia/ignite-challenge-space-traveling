@@ -29,27 +29,6 @@
   }
 }
 
-.postInfo {
-  display: flex;
-  align-items: center;
-
-  span {
-    display: flex;
-    align-items: center;
-    color: var(--gray-200);
-    line-height: 1.1rem;
-    font-size: 0.875rem;
-
-    & + span {
-      margin-left: 1.8rem;
-    }
-
-    svg {
-      margin-right: 0.75rem;
-    }
-  }
-}
-
 .loadMore {
   background: none;
   border: 0;

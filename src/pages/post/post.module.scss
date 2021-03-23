@@ -1,1 +1,36 @@
-// TODO
+.hero {
+  margin-bottom: 4rem;
+  min-height: 25rem;
+  width: 100%;
+
+  img {
+    width: 100%;
+    object-fit: cover;
+    max-height: 25rem;
+  }
+}
+
+.post {
+  padding-bottom: 5rem;
+  h1 {
+    font-weight: 700;
+    font-size: 3rem;
+    margin-bottom: 1.562rem;
+  }
+}
+
+.postSection {
+  margin-top: 4.125rem;
+
+  p{
+    color: var(--gray-200);
+  }
+
+  & p:first-child {
+    margin-top: 3rem;
+  }
+
+  & p:not(:last-child){
+    margin-bottom: 1.5rem;
+  }
+}
