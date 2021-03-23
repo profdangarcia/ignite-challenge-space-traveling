@@ -25,7 +25,7 @@ interface Post {
       heading: string;
       body: {
         text: string;
-      };
+      }[];
     }[];
   };
 }
@@ -74,7 +74,11 @@ export default function Post({ post }: PostProps): JSX.Element {
         {post.data.content.map(postData => (
           <div key={postData.heading} className={styles.postSection}>
             <h2>{postData.heading}</h2>
-            <div dangerouslySetInnerHTML={{ __html: postData.body.text }} />
+            <div
+              dangerouslySetInnerHTML={{
+                __html: RichText.asHtml(postData.body),
+              }}
+            />
           </div>
         ))}
       </article>
@@ -108,22 +112,20 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
       notFound: true,
     };
   }
-
-  const postContent = postData.data.content.map(content => ({
-    heading: content.heading,
-    body: { text: RichText.asHtml(content.body) },
-  }));
+  console.log(postData.last_publication_date);
 
   const formatedPost = {
-    first_publication_date: postData.last_publication_date,
     data: {
-      title: postData.data.title,
       banner: {
         url: postData.data.banner.url,
       },
       author: postData.data.author,
-      content: postContent,
+      content: postData.data.content,
+      subtitle: postData.data.subtitle,
+      title: postData.data.title,
     },
+    uid: postData.uid,
+    first_publication_date: postData.first_publication_date,
   };
 
   return {
