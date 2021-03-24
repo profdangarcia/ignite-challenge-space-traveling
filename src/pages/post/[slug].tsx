@@ -36,7 +36,6 @@ interface PostProps {
 
 export default function Post({ post }: PostProps): JSX.Element {
   const router = useRouter();
-
   if (router.isFallback) {
     return (
       <>
@@ -45,6 +44,21 @@ export default function Post({ post }: PostProps): JSX.Element {
       </>
     );
   }
+
+  const humanWordsPerMinute = 200;
+  const titleWords = post.data.title.split(' ').length;
+
+  const totalWords = post.data.content.reduce((acc, content) => {
+    const headingWords = content.heading
+      ? content.heading.split(' ').length
+      : 0;
+    const bodyWords = RichText.asHtml(content.body).split(' ').length;
+    // eslint-disable-next-line no-param-reassign
+    acc += headingWords + bodyWords;
+    return acc;
+  }, 0);
+
+  const timeToRead = Math.ceil((titleWords + totalWords) / humanWordsPerMinute);
 
   return (
     <>
@@ -68,7 +82,8 @@ export default function Post({ post }: PostProps): JSX.Element {
             {post.data.author}
           </span>
           <span>
-            <FiClock />4 min
+            <FiClock />
+            {timeToRead} min
           </span>
         </div>
         {post.data.content.map(postData => (
@@ -131,5 +146,6 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
     props: {
       post: formatedPost,
     },
+    revalidate: 60 * 60, // 1 hour
   };
 };

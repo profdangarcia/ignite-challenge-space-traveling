@@ -128,6 +128,6 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       postsPagination: { next_page, results: formatedPosts },
     },
-    revalidate: 60 * 60, // 1 hour
+    revalidate: 60 * 30, // 30 min
   };
 };
