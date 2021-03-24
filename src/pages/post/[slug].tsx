@@ -52,7 +52,7 @@ export default function Post({ post }: PostProps): JSX.Element {
     const headingWords = content.heading
       ? content.heading.split(' ').length
       : 0;
-    const bodyWords = RichText.asHtml(content.body).split(' ').length;
+    const bodyWords = RichText.asText(content.body).split(' ').length;
     // eslint-disable-next-line no-param-reassign
     acc += headingWords + bodyWords;
     return acc;
