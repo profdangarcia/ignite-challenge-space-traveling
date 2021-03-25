@@ -17,6 +17,7 @@ import styles from './post.module.scss';
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
   uid: string;
   data: {
     title: string;
@@ -97,6 +98,13 @@ export default function Post({
             {timeToRead} min
           </span>
         </div>
+        {post.first_publication_date !== post.last_publication_date && (
+          <div className={styles.editedPost}>
+            <p>
+              *editado em {parsePtBrDate(post.last_publication_date, false)}
+            </p>
+          </div>
+        )}
         {post.data.content.map(postData => (
           <div key={postData.heading} className={styles.postSection}>
             <h2>{postData.heading}</h2>
@@ -166,6 +174,7 @@ export const getStaticProps: GetStaticProps = async ({
   const postData = await prismic.getByUID('posts', String(slug), {
     ref: previewData?.ref ?? null,
   });
+  console.log(postData);
 
   if (!postData) {
     return {
@@ -203,6 +212,7 @@ export const getStaticProps: GetStaticProps = async ({
     },
     uid: postData.uid,
     first_publication_date: postData.first_publication_date,
+    last_publication_date: postData.last_publication_date,
   };
 
   return {

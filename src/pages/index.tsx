@@ -127,6 +127,7 @@ export const getStaticProps: GetStaticProps = async ({
       fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
       pageSize: 3,
       ref: previewData?.ref ?? null,
+      orderings: '[document.first_publication_date desc]',
     }
   );
   const formatedPosts = results.map(post => ({
