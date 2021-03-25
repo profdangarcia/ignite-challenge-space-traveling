@@ -66,6 +66,7 @@
   a{
     display: flex;
     flex-direction: column;
+    max-width: 50%;
   }
 }
 
@@ -77,5 +78,5 @@
 .next {
   position: absolute;
   right: 0;
-  align-items: flex-end;
+  text-align: right;
 }
