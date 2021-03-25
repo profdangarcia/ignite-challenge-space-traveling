@@ -17,6 +17,7 @@ import styles from './post.module.scss';
 
 interface Post {
   first_publication_date: string | null;
+  uid: string;
   data: {
     title: string;
     banner: {
@@ -35,9 +36,16 @@ interface Post {
 interface PostProps {
   post: Post;
   preview: boolean;
+  nextPost: Post | null;
+  prevPost: Post | null;
 }
 
-export default function Post({ post, preview }: PostProps): JSX.Element {
+export default function Post({
+  post,
+  nextPost,
+  prevPost,
+  preview,
+}: PostProps): JSX.Element {
   const router = useRouter();
   if (router.isFallback) {
     return (
@@ -99,6 +107,24 @@ export default function Post({ post, preview }: PostProps): JSX.Element {
             />
           </div>
         ))}
+        <div className={styles.navigateTool}>
+          {prevPost && (
+            <Link href={`/post/${prevPost.uid}`}>
+              <a className={styles.previous}>
+                {prevPost.data.title}
+                <span>Post anterior</span>
+              </a>
+            </Link>
+          )}
+          {nextPost && (
+            <Link href={`/post/${nextPost.uid}`}>
+              <a className={styles.next}>
+                {nextPost.data.title}
+                <span>Próximo post</span>
+              </a>
+            </Link>
+          )}
+        </div>
         {preview && (
           <aside className={commonStyles.exitPreview}>
             <Link href="/api/exit-preview">
@@ -147,6 +173,24 @@ export const getStaticProps: GetStaticProps = async ({
     };
   }
 
+  const prevPost = (
+    await prismic.query(Prismic.predicates.at('document.type', 'posts'), {
+      pageSize: 1,
+      after: postData.id,
+      orderings: '[document.first_publication_date desc]',
+      fetch: ['posts.title'],
+    })
+  ).results[0];
+
+  const nextPost = (
+    await prismic.query(Prismic.predicates.at('document.type', 'posts'), {
+      pageSize: 1,
+      after: postData.id,
+      orderings: '[document.first_publication_date]',
+      fetch: ['posts.title'],
+    })
+  ).results[0];
+
   const formatedPost = {
     data: {
       banner: {
@@ -165,6 +209,8 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       post: formatedPost,
       preview,
+      prevPost: prevPost ?? null,
+      nextPost: nextPost ?? null,
     },
     revalidate: 60 * 60, // 1 hour
   };
