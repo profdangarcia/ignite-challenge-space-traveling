@@ -9,6 +9,7 @@ import { parsePtBrDate } from '../../utils/parsePtBrDate';
 import { getPrismicClient } from '../../services/prismic';
 
 import Header from '../../components/Header';
+import { Comments } from '../../components/Comments';
 
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
@@ -97,6 +98,9 @@ export default function Post({ post }: PostProps): JSX.Element {
           </div>
         ))}
       </article>
+      <div className={commonStyles.content} id="comments">
+        <Comments />
+      </div>
     </>
   );
 }
