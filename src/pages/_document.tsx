@@ -11,8 +11,14 @@ export default class MyDocument extends Document {
             rel="stylesheet"
           />
           <link rel="shortcut icon" href="/favicon.ico" />
-          <meta property="og:image" content="/cover.png" />
-          <meta name="twitter:image" content="/cover.png" />
+          <meta
+            property="og:image"
+            content="https://ignite-challenge-space-traveling.vercel.app/cover.png"
+          />
+          <meta
+            name="twitter:image"
+            content="https://ignite-challenge-space-traveling.vercel.app/cover.png"
+          />
         </Head>
         <body>
           <Main />
