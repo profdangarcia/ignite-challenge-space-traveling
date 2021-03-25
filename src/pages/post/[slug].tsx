@@ -1,4 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
+import Link from 'next/link';
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import Prismic from '@prismicio/client';
@@ -33,9 +34,10 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  preview: boolean;
 }
 
-export default function Post({ post }: PostProps): JSX.Element {
+export default function Post({ post, preview }: PostProps): JSX.Element {
   const router = useRouter();
   if (router.isFallback) {
     return (
@@ -97,6 +99,13 @@ export default function Post({ post }: PostProps): JSX.Element {
             />
           </div>
         ))}
+        {preview && (
+          <aside className={commonStyles.exitPreview}>
+            <Link href="/api/exit-preview">
+              <a>Sair do modo Preview</a>
+            </Link>
+          </aside>
+        )}
       </article>
       <div className={commonStyles.content} id="comments">
         <Comments />
@@ -122,9 +131,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
+export const getStaticProps: GetStaticProps = async ({
+  params: { slug },
+  preview = false,
+  previewData,
+}) => {
   const prismic = getPrismicClient();
-  const postData = await prismic.getByUID('posts', String(slug), {});
+  const postData = await prismic.getByUID('posts', String(slug), {
+    ref: previewData?.ref ?? null,
+  });
 
   if (!postData) {
     return {
@@ -149,6 +164,7 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
   return {
     props: {
       post: formatedPost,
+      preview,
     },
     revalidate: 60 * 60, // 1 hour
   };
